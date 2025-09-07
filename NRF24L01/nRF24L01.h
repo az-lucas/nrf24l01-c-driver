@@ -47,8 +47,14 @@ typedef enum {
 	NRF24L01_REG_FIFO_STATUS	= 0x17,
 	NRF24L01_REG_DYNPD 			= 0x1C,
 	NRF24L01_REG_FEATURE 		= 0x1D,
+	NRF24L01_CMD_W_REGISTER		= 0x20,
 	NRF24L01_CMD_R_RX_PL_WID	= 0x60,
 	NRF24L01_CMD_R_RX_PAYLOAD	= 0x61,
+	NRF24L01_CMD_W_TX_PAYLOAD	= 0xA0,
+	NRF24L01_CMD_FLUSH_TX		= 0xE1,
+	NRF24L01_CMD_FLUSH_RX		= 0xE2,
+	NRF24L01_CMD_NOP			= 0xFF,
+
 
 
 }nrf24l01_reg_cmd_t;
@@ -85,6 +91,18 @@ typedef struct {
 	uint8_t r_rx_payload[32];
 
 }nrf24l01_handle_t;
+
+typedef enum {
+	NRF24L01_RX_DR = (1<<6),
+	NRF24L01_TX_DS = (1<<5),
+	NRF24L01_MAX_RT = (1<<4)
+
+}nrf24l01_status_t;
+
+typedef enum {
+	NRF24L01_PRIM_RX = (1<<0),
+	NRF24L01_PWR_UP = (1<<1)
+}nrf24l01_config_t;
 
 nrf24l01_result_t nrf24l01_init				(nrf24l01_handle_t *handle);
 nrf24l01_result_t nrf24l01_read_reg_cmd		(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, uint8_t *pData, uint8_t size);
