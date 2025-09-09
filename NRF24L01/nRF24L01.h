@@ -17,7 +17,8 @@
 typedef enum {
 	NRF24L01_OK = 0,
 	NRF24L01_ERROR_SPI,
-	NRF24L01_ERROR_SIZE
+	NRF24L01_ERROR_SIZE,
+	NRF24L01_ERROR_INVALID_ARG
 }nrf24l01_result_t;
 
 typedef enum {
@@ -104,9 +105,48 @@ typedef enum {
 	NRF24L01_PWR_UP = (1<<1)
 }nrf24l01_config_t;
 
+typedef enum {
+	NRF24L01_LOW = 0,
+	NRF24L01_MID_LOW = 1,
+	NRF24L01_MID = 2,
+	NRF24L01_HIGH = 3
+}nrf24l01_rf_power_t;
+
+typedef enum {
+	NRF24L01_1Mbps = 0,
+	NRF24L01_2Mbps = 1,
+	NRF24L01_250kbps = 2,
+}nrf24l01_rf_dr_t;
+
+typedef enum {
+	NRF24L01_250uS = 0,
+	NRF24L01_500uS = 1,
+	NRF24L01_750uS = 2,
+	NRF24L01_1000uS = 3,
+	NRF24L01_1250uS = 4,
+	NRF24L01_1550uS = 5,
+	NRF24L01_1750uS = 6,
+	NRF24L01_2000uS = 7,
+	NRF24L01_2250uS = 8,
+	NRF24L01_2550uS = 9,
+	NRF24L01_2750uS = 10,
+	NRF24L01_3000uS = 11,
+	NRF24L01_3250uS = 12,
+	NRF24L01_3550uS = 13,
+	NRF24L01_3750uS = 14,
+	NRF24L01_4000uS = 15,
+}nrf24l01_retransmit_delay;
+
 nrf24l01_result_t nrf24l01_init				(nrf24l01_handle_t *handle);
 nrf24l01_result_t nrf24l01_read_reg_cmd		(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, uint8_t *pData, uint8_t size);
 nrf24l01_result_t nrf24l01_write_register	(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, const uint8_t *pData, uint8_t size);
 nrf24l01_result_t nrf24l01_set_rx_mode		(nrf24l01_handle_t *handle);
 nrf24l01_result_t nrf24l01_read_rx_buffer	(nrf24l01_handle_t *handle, uint8_t *pData);
 nrf24l01_result_t nrf24l01_tx_data			(nrf24l01_handle_t *handle, const uint8_t *pData, uint8_t size);
+nrf24l01_result_t nrf24l01_set_rf_power		(nrf24l01_handle_t *handle, nrf24l01_rf_power_t pwr);
+nrf24l01_result_t nrf24l01_set_rf_dr		(nrf24l01_handle_t *handle, nrf24l01_rf_dr_t dr);
+nrf24l01_result_t nrf24l01_set_retx_delay	(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay rd);
+nrf24l01_result_t nrf24l01_set_retx_cout	(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay arc);
+
+
+

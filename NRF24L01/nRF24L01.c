@@ -40,7 +40,7 @@ nrf24l01_result_t nrf24l01_init(nrf24l01_handle_t *handle){
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_RX_ADDR_P3, 	&handle->rx_addr_p3,	1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_RX_ADDR_P4, 	&handle->rx_addr_p4,	1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_RX_ADDR_P5, 	&handle->rx_addr_p5,	1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
-	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_TX_ADDR, 		&handle->tx_addr[0],		5) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_TX_ADDR, 		&handle->tx_addr[0],	5) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_RX_PW_P0, 	&handle->rx_pw_p0,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_RX_PW_P1, 	&handle->rx_pw_p1,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_RX_PW_P2, 	&handle->rx_pw_p2,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
@@ -53,17 +53,17 @@ nrf24l01_result_t nrf24l01_init(nrf24l01_handle_t *handle){
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_CMD_R_RX_PL_WID, 	&handle->r_rx_pl_wid,	1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 
 	if(handle->status & NRF24L01_RX_DR){
-		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_CMD_FLUSH_RX, 	&handle->status , 					0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_CMD_FLUSH_RX, 	&handle->status , 	0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 		handle->status |= NRF24L01_RX_DR;
 		if(nrf24l01_write_register(handle, 	NRF24L01_REG_STATUS, 	&handle->status, 	1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
-		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_STATUS, 	&handle->status,					0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_STATUS, 	&handle->status,	0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	}
 
 	if(handle->status & NRF24L01_TX_DS){
-		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_CMD_FLUSH_TX, 	&handle->status , 					0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_CMD_FLUSH_TX, 	&handle->status , 	0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 		handle->status |= NRF24L01_TX_DS;
 		if(nrf24l01_write_register(handle, 	NRF24L01_REG_STATUS, 	&handle->status, 	1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
-		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_STATUS, 	&handle->status,					0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_STATUS, 	&handle->status,	0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	}
 
 	return NRF24L01_OK;
@@ -119,10 +119,10 @@ nrf24l01_result_t nrf24l01_write_register(nrf24l01_handle_t *handle, nrf24l01_re
 }
 
 nrf24l01_result_t nrf24l01_set_rx_mode(nrf24l01_handle_t *handle){
-	if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_CONFIG,	&handle->config,	1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+	if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_CONFIG, &handle->config, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	handle->config |= NRF24L01_PRIM_RX;
 	handle->config |= NRF24L01_PWR_UP;
-	if(nrf24l01_write_register(handle, 	NRF24L01_REG_CONFIG, 	&handle->config,	1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+	if(nrf24l01_write_register(handle, 	NRF24L01_REG_CONFIG, &handle->config, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	nrf24l01_ce_high();
 	return NRF24L01_OK;
 }
@@ -134,7 +134,7 @@ nrf24l01_result_t nrf24l01_read_rx_buffer(nrf24l01_handle_t *handle, uint8_t *pD
 		if(nrf24l01_read_reg_cmd(handle, NRF24L01_CMD_R_RX_PL_WID, 	&handle->r_rx_pl_wid,	1) 						!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
 		if(nrf24l01_read_reg_cmd(handle, NRF24L01_CMD_R_RX_PAYLOAD, &handle->r_rx_payload[0],	handle->r_rx_pl_wid)!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
 		handle->status |= NRF24L01_RX_DR;
-		if(nrf24l01_write_register(handle, 	NRF24L01_REG_STATUS, 	&handle->status, 	1) 			!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(nrf24l01_write_register(handle, 	NRF24L01_REG_STATUS, 	&handle->status, 	1) 							!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
 		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_STATUS, 	&handle->status,					0) 			!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	}
 
@@ -154,8 +154,8 @@ nrf24l01_result_t nrf24l01_tx_data(nrf24l01_handle_t *handle, const uint8_t *pDa
 
 	if(handle->status & NRF24L01_MAX_RT){
 		handle->status |= NRF24L01_MAX_RT;
-		if(nrf24l01_write_register(handle, 	NRF24L01_REG_STATUS, 	&handle->status, 	1) 			!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
-		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_STATUS, 	&handle->status,					0) 			!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(nrf24l01_write_register(handle, 	NRF24L01_REG_STATUS, 	&handle->status, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_STATUS, 	&handle->status, 0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	}
 
 	_tx[0] = NRF24L01_CMD_W_TX_PAYLOAD;
@@ -183,4 +183,68 @@ nrf24l01_result_t nrf24l01_tx_data(nrf24l01_handle_t *handle, const uint8_t *pDa
 
 
 	return NRF24L01_OK;
+}
+
+nrf24l01_result_t nrf24l01_set_rf_power(nrf24l01_handle_t *handle, nrf24l01_rf_power_t pwr){
+
+	if(pwr>NRF24L01_HIGH) return NRF24L01_ERROR_INVALID_ARG;
+
+	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_RF_SETUP, 	&handle->rf_setup,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+
+	handle->rf_setup &= 0xF9;
+	handle->rf_setup |= (pwr<<1);
+
+	if(nrf24l01_write_register(handle, 	NRF24L01_REG_RF_SETUP, 	&handle->rf_setup, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+	if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_RF_SETUP, 	&handle->rf_setup, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+
+	return NRF24L01_OK;
+}
+
+nrf24l01_result_t nrf24l01_set_rf_dr(nrf24l01_handle_t *handle, nrf24l01_rf_power_t dr){
+
+	if(pwr>NRF24L01_250kbps) return NRF24L01_ERROR_INVALID_ARG;
+
+	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_RF_SETUP, 	&handle->rf_setup,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+
+	handle->rf_setup &= 0xD7;
+	if(dr == NRF24L01_250kbps){
+		handle->rf_setup |= (1<<5);
+	}else if(dr == NRF24L01_2Mbps){
+		handle->rf_setup |= (1<<3);
+	}
+
+
+	if(nrf24l01_write_register(handle, 	NRF24L01_REG_RF_SETUP, 	&handle->rf_setup, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+	if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_RF_SETUP, 	&handle->rf_setup, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+
+	return NRF24L01_OK;
+}
+
+nrf24l01_result_t nrf24l01_set_retx_delay	(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay rd){
+	if(rd > NRF24L01_4000uS) return NRF24L01_ERROR_INVALID_ARG;
+
+	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_SETUP_RETR, 	&handle->setup_retr,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+
+	handle->setup_retr &= 0x0F;
+	handle->setup_retr |= (rd<<4);
+
+	if(nrf24l01_write_register(handle, 	NRF24L01_REG_SETUP_RETR, 	&handle->setup_retr, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_SETUP_RETR, 	&handle->setup_retr,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+
+	return NRF24L01_OK;
+}
+
+nrf24l01_result_t nrf24l01_set_retx_cout(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay arc){
+	if(rd > 15) return NRF24L01_ERROR_INVALID_ARG;
+
+	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_SETUP_RETR, 	&handle->setup_retr,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+
+	handle->setup_retr &= 0xF0;
+	handle->setup_retr |= arc;
+
+	if(nrf24l01_write_register(handle, 	NRF24L01_REG_SETUP_RETR, 	&handle->setup_retr, 1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_SETUP_RETR, 	&handle->setup_retr,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+
+	return NRF24L01_OK;
+
 }
