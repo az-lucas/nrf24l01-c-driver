@@ -14,6 +14,7 @@
 #include "nRF24L01_hw.h"
 
 
+
 typedef enum {
 	NRF24L01_OK = 0,
 	NRF24L01_ERROR_SPI,
@@ -137,16 +138,18 @@ typedef enum {
 	NRF24L01_4000uS = 15,
 }nrf24l01_retransmit_delay;
 
-nrf24l01_result_t nrf24l01_init				(nrf24l01_handle_t *handle);
-nrf24l01_result_t nrf24l01_read_reg_cmd		(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, uint8_t *pData, uint8_t size);
-nrf24l01_result_t nrf24l01_write_register	(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, const uint8_t *pData, uint8_t size);
-nrf24l01_result_t nrf24l01_set_rx_mode		(nrf24l01_handle_t *handle);
-nrf24l01_result_t nrf24l01_read_rx_buffer	(nrf24l01_handle_t *handle, uint8_t *pData);
-nrf24l01_result_t nrf24l01_tx_data			(nrf24l01_handle_t *handle, const uint8_t *pData, uint8_t size);
-nrf24l01_result_t nrf24l01_set_rf_power		(nrf24l01_handle_t *handle, nrf24l01_rf_power_t pwr);
-nrf24l01_result_t nrf24l01_set_rf_dr		(nrf24l01_handle_t *handle, nrf24l01_rf_dr_t dr);
-nrf24l01_result_t nrf24l01_set_retx_delay	(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay rd);
-nrf24l01_result_t nrf24l01_set_retx_cout	(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay arc);
+extern nrf24l01_handle_t nrf24;
 
+nrf24l01_result_t nrf24l01_init						(nrf24l01_handle_t *handle);
+nrf24l01_result_t nrf24l01_read_reg_cmd				(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, uint8_t *pData, uint8_t size);
+nrf24l01_result_t nrf24l01_write_register			(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, const uint8_t *pData, uint8_t size);
+nrf24l01_result_t nrf24l01_set_rx_mode				(nrf24l01_handle_t *handle);
+nrf24l01_result_t nrf24l01_read_rx_buffer			(nrf24l01_handle_t *handle);
+nrf24l01_result_t nrf24l01_tx_data					(nrf24l01_handle_t *handle, const uint8_t *pData, uint8_t size);
+nrf24l01_result_t nrf24l01_set_rf_power				(nrf24l01_handle_t *handle, nrf24l01_rf_power_t pwr);
+nrf24l01_result_t nrf24l01_set_rf_dr				(nrf24l01_handle_t *handle, nrf24l01_rf_dr_t dr);
+nrf24l01_result_t nrf24l01_set_retx_delay			(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay rd);
+nrf24l01_result_t nrf24l01_set_retx_cout			(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay arc);
+nrf24l01_result_t nrf24l01_enable_dynamic_payload	(nrf24l01_handle_t *handle, uint8_t pipe);
 
 
