@@ -13,13 +13,14 @@
  */
 #include "nRF24L01_hw.h"
 
-
+#define SIZE_RX_BUFFER 10
 
 typedef enum {
 	NRF24L01_OK = 0,
 	NRF24L01_ERROR_SPI,
 	NRF24L01_ERROR_SIZE,
-	NRF24L01_ERROR_INVALID_ARG
+	NRF24L01_ERROR_INVALID_ARG,
+	NRF24L01_ERROR_BUFFER_RX_FULL
 }nrf24l01_result_t;
 
 typedef enum {
@@ -61,6 +62,10 @@ typedef enum {
 
 }nrf24l01_reg_cmd_t;
 
+typedef struct{
+	uint8_t payload[32];
+	uint8_t size;
+}nrf24l01_buffer_t;
 
 typedef struct {
 	uint8_t config;
@@ -90,7 +95,12 @@ typedef struct {
 	uint8_t dynpd;
 	uint8_t feature;
 	uint8_t r_rx_pl_wid;
-	uint8_t r_rx_payload[32];
+	struct{
+		uint8_t in_index,out_index;
+		uint8_t length;
+		nrf24l01_buffer_t buffer[SIZE_RX_BUFFER];
+	}r_rx_payload;
+
 
 }nrf24l01_handle_t;
 
@@ -144,7 +154,8 @@ nrf24l01_result_t nrf24l01_init						(nrf24l01_handle_t *handle);
 nrf24l01_result_t nrf24l01_read_reg_cmd				(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, uint8_t *pData, uint8_t size);
 nrf24l01_result_t nrf24l01_write_register			(nrf24l01_handle_t *handle, nrf24l01_reg_cmd_t reg, const uint8_t *pData, uint8_t size);
 nrf24l01_result_t nrf24l01_set_rx_mode				(nrf24l01_handle_t *handle);
-nrf24l01_result_t nrf24l01_read_rx_buffer			(nrf24l01_handle_t *handle);
+nrf24l01_result_t nrf24l01_read_rx					(nrf24l01_handle_t *handle);
+nrf24l01_buffer_t nrf24l01_read_buffer				(nrf24l01_handle_t *handle);
 nrf24l01_result_t nrf24l01_tx_data					(nrf24l01_handle_t *handle, const uint8_t *pData, uint8_t size);
 nrf24l01_result_t nrf24l01_set_rf_power				(nrf24l01_handle_t *handle, nrf24l01_rf_power_t pwr);
 nrf24l01_result_t nrf24l01_set_rf_dr				(nrf24l01_handle_t *handle, nrf24l01_rf_dr_t dr);

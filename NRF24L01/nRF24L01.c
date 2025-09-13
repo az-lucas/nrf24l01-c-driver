@@ -127,18 +127,20 @@ nrf24l01_result_t nrf24l01_set_rx_mode(nrf24l01_handle_t *handle){
 	return NRF24L01_OK;
 }
 
-nrf24l01_result_t nrf24l01_read_rx_buffer(nrf24l01_handle_t *handle){
-	uint8_t free;
+nrf24l01_result_t nrf24l01_read_rx(nrf24l01_handle_t *handle){
 
-	for(free = 0; free < 32; free++){
-		handle->r_rx_payload[free] = 0;
-	}
 
 	if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_CMD_NOP,	&handle->status,	0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 
 	if(handle->status & NRF24L01_RX_DR){
+
+		if(handle->r_rx_payload.length >= sizeof(handle->r_rx_payload.buffer)/33-1)return NRF24L01_ERROR_BUFFER_RX_FULL;
+
 		if(nrf24l01_read_reg_cmd(handle, NRF24L01_CMD_R_RX_PL_WID, 	&handle->r_rx_pl_wid,	1) 						!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
-		if(nrf24l01_read_reg_cmd(handle, NRF24L01_CMD_R_RX_PAYLOAD, &handle->r_rx_payload[0],	handle->r_rx_pl_wid)!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		handle->r_rx_payload.buffer[handle->r_rx_payload.in_index].size = handle->r_rx_pl_wid;
+		if(nrf24l01_read_reg_cmd(handle, NRF24L01_CMD_R_RX_PAYLOAD, handle->r_rx_payload.buffer[handle->r_rx_payload.in_index++].payload,	handle->r_rx_pl_wid)!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(handle->r_rx_payload.in_index > sizeof(handle->r_rx_payload.buffer)/33-1)handle->r_rx_payload.in_index = 0;
+		handle->r_rx_payload.length++;
 		handle->status |= NRF24L01_RX_DR;
 		if(nrf24l01_write_register(handle, 	NRF24L01_REG_STATUS, 	&handle->status, 	1) 							!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
 		if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_REG_STATUS, 	&handle->status,					0) 			!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
@@ -146,6 +148,20 @@ nrf24l01_result_t nrf24l01_read_rx_buffer(nrf24l01_handle_t *handle){
 
 
 	return NRF24L01_OK;
+}
+
+nrf24l01_buffer_t nrf24l01_read_buffer(nrf24l01_handle_t *handle){
+	nrf24l01_buffer_t rx;
+	rx.size = 0;
+	if(handle->r_rx_payload.length > 0){
+		rx = handle->r_rx_payload.buffer[handle->r_rx_payload.out_index++];
+		if(handle->r_rx_payload.out_index > sizeof(handle->r_rx_payload.buffer)/33-1)handle->r_rx_payload.out_index = 0;
+		handle->r_rx_payload.length--;
+		return rx;
+	}else{
+		return rx;
+	}
+
 }
 
 nrf24l01_result_t nrf24l01_tx_data(nrf24l01_handle_t *handle, const uint8_t *pData, uint8_t size){
