@@ -11,6 +11,8 @@
  *          
  *          
  */
+#ifndef NRF24L01_H
+#define NRF24L01_H
 #include "nRF24L01_hw.h"
 
 #define SIZE_RX_BUFFER 10
@@ -163,4 +165,4 @@ nrf24l01_result_t nrf24l01_set_retx_delay			(nrf24l01_handle_t *handle, nrf24l01
 nrf24l01_result_t nrf24l01_set_retx_cout			(nrf24l01_handle_t *handle, nrf24l01_retransmit_delay arc);
 nrf24l01_result_t nrf24l01_enable_dynamic_payload	(nrf24l01_handle_t *handle, uint8_t pipe);
 
-
+#endif /* NRF24L01_H */
