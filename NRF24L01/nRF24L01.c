@@ -22,7 +22,7 @@ nrf24l01_result_t nrf24l01_init(nrf24l01_handle_t *handle){
 	nrf24l01_csn_high();
 	nrf24l01_ce_low();
 	if(nrf24l01_spi_init() != NRF24L01_SPI_OK) return NRF24L01_ERROR_SPI;
-	nrf24l01_delay(15);
+	nrf24l01_delay(1500);
 
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_CONFIG,		&handle->config,		1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
 	if(nrf24l01_read_reg_cmd(handle, NRF24L01_REG_EN_AA, 		&handle->en_aa,			1) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
@@ -137,6 +137,10 @@ nrf24l01_result_t nrf24l01_read_rx(nrf24l01_handle_t *handle){
 		if(handle->r_rx_payload.length >= sizeof(handle->r_rx_payload.buffer)/33-1)return NRF24L01_ERROR_BUFFER_RX_FULL;
 
 		if(nrf24l01_read_reg_cmd(handle, NRF24L01_CMD_R_RX_PL_WID, 	&handle->r_rx_pl_wid,	1) 						!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		if(handle->r_rx_pl_wid>32){
+			if(nrf24l01_read_reg_cmd(handle, 	NRF24L01_CMD_FLUSH_RX, 	&handle->status , 	0) != NRF24L01_OK) return NRF24L01_ERROR_SPI;
+		}
+
 		handle->r_rx_payload.buffer[handle->r_rx_payload.in_index].size = handle->r_rx_pl_wid;
 		if(nrf24l01_read_reg_cmd(handle, NRF24L01_CMD_R_RX_PAYLOAD, handle->r_rx_payload.buffer[handle->r_rx_payload.in_index++].payload,	handle->r_rx_pl_wid)!= NRF24L01_OK) return NRF24L01_ERROR_SPI;
 		if(handle->r_rx_payload.in_index > sizeof(handle->r_rx_payload.buffer)/33-1)handle->r_rx_payload.in_index = 0;
